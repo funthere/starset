@@ -10,11 +10,11 @@ import (
 )
 
 type User struct {
-	ID        uint32    `json:"id" gorm:"primaryKey"`
-	Name      string    `json:"name" gorm:"NOT NULL;type:varchar(255);"`
-	Email     string    `json:"email" gorm:"NOT NULL;unique;type:varchar(255);"`
-	Password  string    `json:"password,omitempty" gorm:"NOT NULL;type:varchar(255);"`
-	Address   string    `json:"address" gorm:"NOT NULL;type:varchar(255);"`
+	ID        uint32    `json:"-" gorm:"primaryKey"`
+	Name      string    `json:"name" gorm:"NOT NULL;type:varchar(255);" validate:"required"`
+	Email     string    `json:"email" gorm:"NOT NULL;unique;type:varchar(255);" validate:"required,email"`
+	Password  string    `json:"password,omitempty" gorm:"NOT NULL;type:varchar(255);" validate:"required"`
+	Address   string    `json:"address" gorm:"NOT NULL;type:varchar(255);" validate:"required"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
