@@ -9,11 +9,11 @@ type ErrResponse struct {
 	Message string `json:"message"`
 }
 
-func GetPort() string {
-	port := os.Getenv("PORT")
+func ServerAddress() string {
+	port := os.Getenv("SERVER_ADDRESS")
 	if port == "" {
-		port = "8000"
+		port = ":8000"
 	}
 
-	return fmt.Sprintf(":%s", port)
+	return fmt.Sprintf("%s", port)
 }

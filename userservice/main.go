@@ -7,7 +7,7 @@ import (
 	"github.com/funthere/starset/userservice/domain"
 	"github.com/funthere/starset/userservice/helpers"
 	"github.com/funthere/starset/userservice/service"
-	"github.com/go-playground/validator/v10"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
@@ -16,12 +16,10 @@ import (
 	userUsecase "github.com/funthere/starset/userservice/user/usecase"
 )
 
-type CustomValidator struct {
-	validator *validator.Validate
-}
-
-func (cv CustomValidator) Validate(data interface{}) error {
-	return cv.validator.Struct(data)
+func init() {
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
@@ -60,7 +58,7 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		if err := e.Start(helpers.GetPort()); err != nil {
+		if err := e.Start(helpers.ServerAddress()); err != nil {
 			e.Logger.Info("shutting down the server")
 		}
 	}()
