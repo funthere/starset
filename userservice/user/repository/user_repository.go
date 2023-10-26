@@ -19,7 +19,7 @@ func NewUserRepository(db *gorm.DB) domain.UserRepository {
 }
 
 func (u *UserRepository) Register(ctx context.Context, user domain.User) error {
-	if err := u.db.Where("email", user.Email).Take(&user).Error; err != nil {
+	if err := u.db.Where("email", user.Email).First(&user).Error; !errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.New("Email duplicated!")
 	}
 

@@ -21,17 +21,17 @@ func NewUserHandler(e *echo.Echo, userUc domain.UserUsecase) {
 }
 
 func (h UserHandler) RegisterUser(c echo.Context) error {
-	user := new(domain.User)
+	user := domain.User{}
 	if err := c.Bind(&user); err != nil {
 		return c.JSON(http.StatusBadRequest, helpers.ErrResponse{Message: "invalid json payload"})
 	}
 
 	if err := c.Validate(&user); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	if err := h.userUsecase.Register(c.Request().Context(), *user); err != nil {
-		return err
+	if err := h.userUsecase.Register(c.Request().Context(), user); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	return c.JSON(http.StatusCreated, map[string]any{
