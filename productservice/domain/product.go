@@ -31,6 +31,11 @@ type User struct {
 	Email   string `json:"email"`
 	Address string `json:"address"`
 }
+type ProductUsecase interface {
+	Store(ctx context.Context, product Product) error
+	GetById(id uint32) (Product, error)
+	FetchByIds(ctx context.Context, ids []uint32) ([]Product, error)
+}
 
 type ProductRepository interface {
 	Store(ctx context.Context, product Product) error
