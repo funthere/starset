@@ -19,11 +19,13 @@ type Product struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
-func (p *Product) BeforeCreate(tx *gorm.DB) {
+func (p *Product) BeforeCreate(tx *gorm.DB) error {
 	p.ID = uuid.New().ID()
 	now := time.Now()
 	p.CreatedAt = now
 	p.UpdatedAt = now
+
+	return nil
 }
 
 type User struct {
@@ -33,13 +35,13 @@ type User struct {
 	Address string `json:"address"`
 }
 type ProductUsecase interface {
-	Store(ctx context.Context, product Product) error
+	Store(ctx context.Context, product *Product) error
 	GetById(id uint32) (Product, error)
 	FetchByIds(ctx context.Context, ids []uint32) ([]Product, error)
 }
 
 type ProductRepository interface {
-	Store(ctx context.Context, product Product) error
+	Store(ctx context.Context, product *Product) error
 	GetById(id uint32) (Product, error)
 	FetchByIds(ctx context.Context, ids []uint32) ([]Product, error)
 }

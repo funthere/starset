@@ -16,7 +16,7 @@ func NewProductUsecase(productRepo domain.ProductRepository) domain.ProductUseca
 	}
 }
 
-func (u *productUsecase) Store(ctx context.Context, product domain.Product) error {
+func (u *productUsecase) Store(ctx context.Context, product *domain.Product) error {
 	return u.productRepo.Store(ctx, product)
 }
 

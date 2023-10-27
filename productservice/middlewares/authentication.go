@@ -12,7 +12,7 @@ func Authentication(next echo.HandlerFunc) echo.HandlerFunc {
 		verifyToken, err := helper.VerifyToken(c)
 
 		if err != nil {
-			return c.JSON(http.StatusUnauthorized, err)
+			return c.JSON(http.StatusUnauthorized, "invalid token")
 
 		}
 

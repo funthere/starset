@@ -5,6 +5,8 @@ import (
 	"strconv"
 
 	"github.com/funthere/starset/productservice/domain"
+	"github.com/funthere/starset/productservice/middlewares"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
 
@@ -16,8 +18,9 @@ func NewProductHandler(e *echo.Echo, productUc domain.ProductUsecase) {
 	handler := &productHandler{productUc}
 
 	router := e.Group("product")
+	router.Use(middlewares.Authentication)
 
-	router.POST("/", handler.Store)
+	router.POST("", handler.Store)
 	router.GET("/:id", handler.Get)
 
 }
@@ -31,12 +34,16 @@ func (h *productHandler) Store(c echo.Context) error {
 	if err := c.Validate(&product); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
+	userData := c.Get("userData").(jwt.MapClaims)
+	userID := uint32(userData["id"].(float64))
+	product.OwnerId = userID
+	product.Owner.ID = userID
 
-	if err := h.productUsecase.Store(c.Request().Context(), product); err != nil {
+	if err := h.productUsecase.Store(c.Request().Context(), &product); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	return c.JSON(http.StatusOK, map[string]any{
+	return c.JSON(http.StatusCreated, map[string]any{
 		"data": &product,
 	})
 }
@@ -49,5 +56,5 @@ func (h *productHandler) Get(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusCreated, res)
+	return c.JSON(http.StatusOK, res)
 }

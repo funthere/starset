@@ -18,8 +18,8 @@ func NewProductRepository(db *gorm.DB) domain.ProductRepository {
 	}
 }
 
-func (r *productRepository) Store(ctx context.Context, product domain.Product) error {
-	if err := r.db.Where("name", product.Name).First(&product).Error; !errors.Is(err, gorm.ErrRecordNotFound) {
+func (r *productRepository) Store(ctx context.Context, product *domain.Product) error {
+	if err := r.db.Where("name", product.Name).First(product).Error; !errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.New("product name duplicated")
 	}
 	err := r.db.Debug().Create(&product).Error
