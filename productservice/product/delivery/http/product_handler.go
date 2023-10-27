@@ -2,6 +2,7 @@ package http
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/funthere/starset/productservice/domain"
 	"github.com/labstack/echo/v4"
@@ -12,11 +13,12 @@ type productHandler struct {
 }
 
 func NewProductHandler(e *echo.Echo, productUc domain.ProductUsecase) {
-	handler := productHandler{
-		productUsecase: productUc,
-	}
+	handler := &productHandler{productUc}
 
-	e.POST("/store", handler.Store)
+	router := e.Group("product")
+
+	router.POST("/", handler.Store)
+	router.GET("/:id", handler.Get)
 
 }
 
@@ -37,4 +39,15 @@ func (h *productHandler) Store(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]any{
 		"data": &product,
 	})
+}
+
+func (h *productHandler) Get(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	res, err := h.productUsecase.GetById(uint32(id))
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusCreated, res)
 }
