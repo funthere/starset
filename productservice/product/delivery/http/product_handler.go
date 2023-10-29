@@ -22,6 +22,7 @@ func NewProductHandler(e *echo.Echo, productUc domain.ProductUsecase) {
 
 	router.POST("", handler.Store)
 	router.GET("/:id", handler.Get)
+	router.GET("", handler.Fetch)
 
 }
 
@@ -36,7 +37,7 @@ func (h *productHandler) Store(c echo.Context) error {
 	}
 	userData := c.Get("userData").(jwt.MapClaims)
 	userID := uint32(userData["id"].(float64))
-	product.OwnerId = userID
+	product.OwnerID = userID
 	product.Owner.ID = userID
 
 	if err := h.productUsecase.Store(c.Request().Context(), &product); err != nil {
@@ -52,6 +53,19 @@ func (h *productHandler) Get(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	res, err := h.productUsecase.GetById(uint32(id))
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
+
+func (h *productHandler) Fetch(c echo.Context) error {
+	filter := domain.Filter{
+		Search: c.QueryParam("search"),
+	}
+
+	res, err := h.productUsecase.Fetch(c.Request().Context(), filter)
 	if err != nil {
 		return err
 	}

@@ -27,3 +27,7 @@ func (u *productUsecase) GetById(id uint32) (domain.Product, error) {
 func (u *productUsecase) FetchByIds(ctx context.Context, ids []uint32) ([]domain.Product, error) {
 	return u.productRepo.FetchByIds(ctx, ids)
 }
+
+func (u *productUsecase) Fetch(ctx context.Context, filter domain.Filter) ([]domain.Product, error) {
+	return u.productRepo.Fetch(ctx, filter)
+}
