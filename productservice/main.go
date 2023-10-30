@@ -2,7 +2,11 @@ package main
 
 import (
 	"log"
+	"net/http"
+	"net/url"
+	"os"
 	"sync"
+	"time"
 
 	"github.com/funthere/starset/productservice/domain"
 	helpers "github.com/funthere/starset/productservice/helper"
@@ -14,6 +18,7 @@ import (
 	productHandler "github.com/funthere/starset/productservice/product/delivery/http"
 	productRepo "github.com/funthere/starset/productservice/product/repository"
 	productUsecase "github.com/funthere/starset/productservice/product/usecase"
+	"github.com/funthere/starset/productservice/service/user"
 )
 
 func init() {
@@ -48,9 +53,24 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Validator = domain.NewValidator()
 
+	// user service init
+	envUserSrvURL, ok := os.LookupEnv("USER_SERVICE_URL")
+	if !ok {
+		log.Fatalln("Error lookup ENV USER_SERVICE_URL")
+	}
+	httpClient := &http.Client{
+		Timeout:   30 * time.Second,
+		Transport: &http.Transport{},
+	}
+	userSrvURL, err := url.Parse(envUserSrvURL)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+	userSvc := user.NewUserService(httpClient, userSrvURL.String())
+
 	// product init
 	productRepo := productRepo.NewProductRepository(db)
-	productUc := productUsecase.NewProductUsecase(productRepo)
+	productUc := productUsecase.NewProductUsecase(productRepo, userSvc)
 	productHandler.NewProductHandler(e, productUc)
 
 	// start server

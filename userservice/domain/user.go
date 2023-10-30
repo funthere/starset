@@ -10,7 +10,7 @@ import (
 )
 
 type User struct {
-	ID        uint32    `json:"-" gorm:"primaryKey"`
+	ID        uint32    `json:"id" gorm:"primaryKey"`
 	Name      string    `json:"name" gorm:"NOT NULL;type:varchar(255);" validate:"required"`
 	Email     string    `json:"email" gorm:"NOT NULL;unique;type:varchar(255);" validate:"required,email"`
 	Password  string    `json:"password,omitempty" gorm:"NOT NULL;type:varchar(255);" validate:"required"`

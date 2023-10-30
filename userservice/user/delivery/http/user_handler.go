@@ -3,6 +3,8 @@ package http
 import (
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/funthere/starset/userservice/domain"
@@ -22,6 +24,7 @@ func NewUserHandler(e *echo.Echo, userUc domain.UserUsecase) {
 
 	e.POST("/register", handler.RegisterUser)
 	e.POST("/login", handler.LoginUser)
+	e.GET("/users", handler.FetchUser)
 }
 
 func (h UserHandler) RegisterUser(c echo.Context) error {
@@ -69,6 +72,35 @@ func (h UserHandler) LoginUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]any{
 		"token": jwtToken,
 	})
+}
+
+func (h UserHandler) FetchUser(c echo.Context) error {
+	var (
+		strIds   = strings.Split(c.QueryParam("ids"), ",")
+		response = map[uint32]domain.User{}
+	)
+
+	if len(strIds) >= 1 && strIds[0] != "" {
+		ids := []uint32{}
+		for _, val := range strIds {
+			ui64, err := strconv.ParseUint(val, 10, 64)
+			if err != nil {
+				return echo.NewHTTPError(http.StatusBadRequest, helpers.ErrResponse{Message: err.Error()})
+			}
+			ids = append(ids, uint32(ui64))
+		}
+
+		users, err := h.userUsecase.FetchUsersByIds(c.Request().Context(), ids)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		}
+
+		for _, val := range users {
+			response[val.ID] = val
+		}
+	}
+
+	return c.JSON(http.StatusOK, response)
 }
 
 var secretKey = os.Getenv("JWT_SECRET")

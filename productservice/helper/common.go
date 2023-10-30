@@ -3,6 +3,7 @@ package helper
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 type ErrResponse struct {
@@ -16,4 +17,12 @@ func ServerAddress() string {
 	}
 
 	return fmt.Sprintf("%s", port)
+}
+
+func IntSliceToString(numbers []uint32) string {
+	var numbersString []string
+	for _, id := range numbers {
+		numbersString = append(numbersString, fmt.Sprint(id))
+	}
+	return strings.Join(numbersString, ",")
 }
