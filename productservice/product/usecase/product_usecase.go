@@ -32,7 +32,7 @@ func (u *productUsecase) GetById(ctx context.Context, id uint32) (domain.Product
 
 	mapUsers, err := u.userService.GetUserByIds(ctx, ids)
 	if err != nil {
-		return domain.Product{}, err
+		return product, nil
 	}
 
 	if len(mapUsers) > 0 {
