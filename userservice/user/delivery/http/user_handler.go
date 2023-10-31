@@ -13,12 +13,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type UserHandler struct {
+type userHandler struct {
 	userUsecase domain.UserUsecase
 }
 
 func NewUserHandler(e *echo.Echo, userUc domain.UserUsecase) {
-	handler := UserHandler{
+	handler := userHandler{
 		userUsecase: userUc,
 	}
 
@@ -27,13 +27,13 @@ func NewUserHandler(e *echo.Echo, userUc domain.UserUsecase) {
 	e.GET("/users", handler.FetchUser)
 }
 
-func (h UserHandler) RegisterUser(c echo.Context) error {
-	user := domain.User{}
+func (h userHandler) RegisterUser(c echo.Context) error {
+	user := new(domain.User)
 	if err := c.Bind(&user); err != nil {
 		return c.JSON(http.StatusBadRequest, helpers.ErrResponse{Message: "invalid json payload"})
 	}
 
-	if err := c.Validate(&user); err != nil {
+	if err := c.Validate(user); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
@@ -42,11 +42,11 @@ func (h UserHandler) RegisterUser(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, map[string]any{
-		"data": &user,
+		"data": user,
 	})
 }
 
-func (h UserHandler) LoginUser(c echo.Context) error {
+func (h userHandler) LoginUser(c echo.Context) error {
 	user := domain.User{}
 	if err := c.Bind(&user); err != nil {
 		return c.JSON(http.StatusBadRequest, helpers.ErrResponse{Message: "invalid json payload"})
@@ -74,7 +74,7 @@ func (h UserHandler) LoginUser(c echo.Context) error {
 	})
 }
 
-func (h UserHandler) FetchUser(c echo.Context) error {
+func (h userHandler) FetchUser(c echo.Context) error {
 	var (
 		strIds   = strings.Split(c.QueryParam("ids"), ",")
 		response = map[uint32]domain.User{}

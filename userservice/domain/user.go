@@ -27,14 +27,14 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 }
 
 type UserUsecase interface {
-	Register(ctx context.Context, user User) error
+	Register(ctx context.Context, user *User) error
 	Login(user *User) error
 	GetUserById(id uint32) (User, error)
 	FetchUsersByIds(ctx context.Context, ids []uint32) ([]User, error)
 }
 
 type UserRepository interface {
-	Register(ctx context.Context, user User) error
+	Register(ctx context.Context, user *User) error
 	Login(user *User) error
 	GetUserById(id uint32) (User, error)
 	FetchUsersByIds(ctx context.Context, ids []uint32) ([]User, error)

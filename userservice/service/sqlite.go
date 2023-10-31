@@ -7,7 +7,7 @@ import (
 )
 
 func InitDatabase() (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open("db1.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("user.db"), &gorm.Config{})
 
 	// db.Debug().Migrator().DropTable(domain.User{})
 
