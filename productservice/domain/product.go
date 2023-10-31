@@ -42,14 +42,14 @@ type User struct {
 }
 type ProductUsecase interface {
 	Store(ctx context.Context, product *Product) error
-	GetById(id uint32) (Product, error)
+	GetById(ctx context.Context, id uint32) (Product, error)
 	FetchByIds(ctx context.Context, ids []uint32) ([]Product, error)
 	Fetch(ctx context.Context, filter Filter) ([]Product, error)
 }
 
 type ProductRepository interface {
 	Store(ctx context.Context, product *Product) error
-	GetById(id uint32) (Product, error)
+	GetById(ctx context.Context, id uint32) (Product, error)
 	FetchByIds(ctx context.Context, ids []uint32) ([]Product, error)
 	Fetch(ctx context.Context, filter Filter) ([]Product, error)
 }
