@@ -23,8 +23,28 @@ func (u *productUsecase) Store(ctx context.Context, product *domain.Product) err
 	return u.productRepo.Store(ctx, product)
 }
 
-func (u *productUsecase) GetById(id uint32) (domain.Product, error) {
-	return u.productRepo.GetById(id)
+func (u *productUsecase) GetById(ctx context.Context, id uint32) (domain.Product, error) {
+	product, err := u.productRepo.GetById(ctx, id)
+	if err != nil {
+		return domain.Product{}, err
+	}
+	ids := []uint32{product.OwnerID}
+
+	mapUsers, err := u.userService.GetUserByIds(ctx, ids)
+	if err != nil {
+		return domain.Product{}, err
+	}
+
+	if len(mapUsers) > 0 {
+		if user, ok := mapUsers[product.OwnerID]; ok {
+			product.Owner.ID = user.ID
+			product.Owner.Name = user.Name
+			product.Owner.Email = user.Email
+			product.Owner.Address = user.Address
+		}
+	}
+
+	return product, nil
 }
 
 func (u *productUsecase) FetchByIds(ctx context.Context, ids []uint32) ([]domain.Product, error) {
@@ -45,15 +65,17 @@ func (u *productUsecase) Fetch(ctx context.Context, filter domain.Filter) ([]dom
 
 	mapUsers, err := u.userService.GetUserByIds(ctx, ids)
 	if err != nil {
-		return []domain.Product{}, err
+		return producs, nil
 	}
 
 	// fill the product.owner attributes
-	for i := range producs {
-		if _, ok := mapUsers[producs[i].OwnerID]; ok {
-			producs[i].Owner.Name = mapUsers[producs[i].OwnerID].Name
-			producs[i].Owner.Email = mapUsers[producs[i].OwnerID].Email
-			producs[i].Owner.Address = mapUsers[producs[i].OwnerID].Address
+	if len(mapUsers) > 0 {
+		for i := range producs {
+			if user, ok := mapUsers[producs[i].OwnerID]; ok {
+				producs[i].Owner.Name = user.Name
+				producs[i].Owner.Email = user.Email
+				producs[i].Owner.Address = user.Address
+			}
 		}
 	}
 

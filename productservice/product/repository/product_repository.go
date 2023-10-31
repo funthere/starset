@@ -27,7 +27,7 @@ func (r *productRepository) Store(ctx context.Context, product *domain.Product) 
 	return err
 }
 
-func (r *productRepository) GetById(id uint32) (domain.Product, error) {
+func (r *productRepository) GetById(ctx context.Context, id uint32) (domain.Product, error) {
 	product := domain.Product{}
 	if err := r.db.First(&product, id).Error; err != nil {
 		return domain.Product{}, err

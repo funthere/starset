@@ -52,7 +52,7 @@ func (h *productHandler) Store(c echo.Context) error {
 func (h *productHandler) Get(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	res, err := h.productUsecase.GetById(uint32(id))
+	res, err := h.productUsecase.GetById(c.Request().Context(), uint32(id))
 	if err != nil {
 		return err
 	}
