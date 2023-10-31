@@ -20,7 +20,25 @@ func NewProductUsecase(productRepo domain.ProductRepository, userService user.Us
 }
 
 func (u *productUsecase) Store(ctx context.Context, product *domain.Product) error {
-	return u.productRepo.Store(ctx, product)
+	if err := u.productRepo.Store(ctx, product); err != nil {
+		return err
+	}
+	ids := []uint32{product.OwnerID}
+	mapUsers, err := u.userService.GetUserByIds(ctx, ids)
+	if err != nil {
+		return nil
+	}
+
+	if len(mapUsers) > 0 {
+		if user, ok := mapUsers[product.OwnerID]; ok {
+			product.Owner.ID = user.ID
+			product.Owner.Name = user.Name
+			product.Owner.Email = user.Email
+			product.Owner.Address = user.Address
+		}
+	}
+
+	return nil
 }
 
 func (u *productUsecase) GetById(ctx context.Context, id uint32) (domain.Product, error) {

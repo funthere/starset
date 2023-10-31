@@ -38,7 +38,6 @@ func (h *productHandler) Store(c echo.Context) error {
 	userData := c.Get("userData").(jwt.MapClaims)
 	userID := uint32(userData["id"].(float64))
 	product.OwnerID = userID
-	product.Owner.ID = userID
 
 	if err := h.productUsecase.Store(c.Request().Context(), &product); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
