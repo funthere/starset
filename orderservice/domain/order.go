@@ -13,7 +13,7 @@ type Order struct {
 	Seller             User           `json:"seller" gorm:"-"`
 	SourceAddress      string         `json:"source_address" gorm:"NULL;type:varchar(255);"`
 	DestinationAddress string         `json:"destination_address" gorm:"NOT NULL;type:varchar(255);" validate:"required"`
-	Notes              string         `json:"notes" gorm:"NOT NULL;type:varchar(255);" `
+	Notes              string         `json:"notes" gorm:"NULL;type:varchar(255);" `
 	Items              []OrderProduct `json:"items" gorm:"foreignKey:ID" validate:"required,min=1"`
 	TotalPrice         int64          `json:"total_price" gorm:"column:total_price;NOT NULL;type:integer;"`
 	Status             int            `json:"status" gorm:"NOT NULL;"`
