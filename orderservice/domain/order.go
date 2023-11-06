@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+const (
+	StatusAccepted = "accepted"
+	StatusRejected = "rejected"
+)
+
 type Order struct {
 	ID                 int64          `json:"-" gorm:"primaryKey"`
 	BuyerID            int64          `json:"-" gorm:"column:buyer_id;NULL;type:integer;" validate:"required"`
@@ -16,7 +21,7 @@ type Order struct {
 	Notes              string         `json:"notes" gorm:"NULL;type:varchar(255);" `
 	Items              []OrderProduct `json:"items" gorm:"foreignKey:ID" validate:"required,min=1"`
 	TotalPrice         int64          `json:"total_price" gorm:"column:total_price;NOT NULL;type:integer;"`
-	Status             int            `json:"status" gorm:"NOT NULL;"`
+	Status             string         `json:"status" gorm:"NOT NULL;"`
 	CreatedAt          time.Time      `json:"created_at"`
 	UpdatedAt          time.Time      `json:"updated_at"`
 }
@@ -53,11 +58,11 @@ type Filter struct {
 type OrderUsecase interface {
 	Store(ctx context.Context, order *Order) error
 	Fetch(ctx context.Context, filter Filter) ([]Order, error)
-	PatchStatus(ctx context.Context, id int64, status int) error
+	PatchStatus(ctx context.Context, id int64, status string) error
 }
 
 type OrderRepository interface {
 	Store(ctx context.Context, order *Order) error
 	Fetch(ctx context.Context, filter Filter) ([]Order, error)
-	PatchStatus(ctx context.Context, id int64, status int) error
+	PatchStatus(ctx context.Context, id int64, status string) error
 }

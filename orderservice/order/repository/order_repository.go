@@ -41,6 +41,6 @@ func (r orderRepository) Fetch(ctx context.Context, filter domain.Filter) ([]dom
 	return orders, nil
 }
 
-func (r orderRepository) PatchStatus(ctx context.Context, id int64, status int) error {
+func (r orderRepository) PatchStatus(ctx context.Context, id int64, status string) error {
 	return r.db.WithContext(ctx).Debug().Model(&domain.Order{}).Where("id", id).Update("status", status).Error
 }

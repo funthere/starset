@@ -24,6 +24,6 @@ func (u orderUsecase) Fetch(ctx context.Context, filter domain.Filter) ([]domain
 	return u.orderRepo.Fetch(ctx, filter)
 }
 
-func (u orderUsecase) PatchStatus(ctx context.Context, id int64, status int) error {
+func (u orderUsecase) PatchStatus(ctx context.Context, id int64, status string) error {
 	return u.PatchStatus(ctx, id, status)
 }
