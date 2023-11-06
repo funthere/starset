@@ -44,7 +44,8 @@ type Product struct {
 }
 
 type Filter struct {
-	BuyerID int64
+	BuyerID,
+	SellerID int64
 	OrderID int64
 	Search  string
 }
@@ -52,11 +53,11 @@ type Filter struct {
 type OrderUsecase interface {
 	Store(ctx context.Context, order *Order) error
 	Fetch(ctx context.Context, filter Filter) ([]Order, error)
-	PatchStatus(ctx context.Context, ID int64, status int) error
+	PatchStatus(ctx context.Context, id int64, status int) error
 }
 
 type OrderRepository interface {
 	Store(ctx context.Context, order *Order) error
 	Fetch(ctx context.Context, filter Filter) ([]Order, error)
-	PatchStatus(ctx context.Context, ID int64, status int) error
+	PatchStatus(ctx context.Context, id int64, status int) error
 }
