@@ -32,6 +32,7 @@ type Filter struct {
 	OwnerID uint32
 	OrderID uint32
 	Search  string
+	IDs     []uint32
 }
 
 type User struct {

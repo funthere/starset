@@ -58,6 +58,10 @@ func (r *productRepository) Fetch(ctx context.Context, filter domain.Filter) ([]
 		qBuilder = qBuilder.Where("name LIKE ?", fmt.Sprintf("%%%v%%", filter.Search))
 	}
 
+	if len(filter.IDs) > 0 {
+		qBuilder = qBuilder.Where("id", filter.IDs)
+	}
+
 	if err := qBuilder.Find(&products).Error; err != nil {
 		return []domain.Product{}, err
 	}

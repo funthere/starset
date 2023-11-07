@@ -3,6 +3,7 @@ package http
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/funthere/starset/productservice/domain"
 	"github.com/funthere/starset/productservice/middlewares"
@@ -18,8 +19,9 @@ func NewProductHandler(e *echo.Echo, productUc domain.ProductUsecase) {
 	handler := &productHandler{productUc}
 
 	router := e.Group("product")
-	router.Use(middlewares.Authentication)
+	router.GET("/fetch", handler.FetchByIds)
 
+	router.Use(middlewares.Authentication)
 	router.POST("", handler.Store)
 	router.GET("/:id", handler.Get)
 	router.GET("", handler.Fetch)
@@ -70,4 +72,36 @@ func (h *productHandler) Fetch(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, res)
+}
+
+func (h *productHandler) FetchByIds(c echo.Context) error {
+	var (
+		strIds   = strings.Split(c.QueryParam("ids"), ",")
+		response = map[uint32]domain.Product{}
+	)
+
+	if len(strIds) >= 1 && strIds[0] != "" {
+		ids := []uint32{}
+		for _, val := range strIds {
+			ui64, err := strconv.ParseUint(val, 10, 64)
+			if err != nil {
+				return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+			}
+			ids = append(ids, uint32(ui64))
+		}
+		filter := domain.Filter{
+			IDs: ids,
+		}
+
+		products, err := h.productUsecase.Fetch(c.Request().Context(), filter)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		}
+
+		for _, val := range products {
+			response[val.ID] = val
+		}
+	}
+
+	return c.JSON(http.StatusOK, response)
 }
