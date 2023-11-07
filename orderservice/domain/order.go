@@ -12,9 +12,9 @@ const (
 
 type Order struct {
 	ID                 int64          `json:"-" gorm:"primaryKey"`
-	BuyerID            int64          `json:"-" gorm:"column:buyer_id;NULL;type:integer;" validate:"required"`
+	BuyerID            int64          `json:"-" gorm:"column:buyer_id;NULL;type:integer;" validate:"-"`
 	Buyer              User           `json:"buyer" gorm:"-"`
-	SellerID           int64          `json:"-" gorm:"column:seller_id;NULL;type:integer;" validate:"required"`
+	SellerID           int64          `json:"-" gorm:"column:seller_id;NULL;type:integer;" validate:"-"`
 	Seller             User           `json:"seller" gorm:"-"`
 	SourceAddress      string         `json:"source_address" gorm:"NULL;type:varchar(255);"`
 	DestinationAddress string         `json:"destination_address" gorm:"NOT NULL;type:varchar(255);" validate:"required"`

@@ -36,8 +36,12 @@ func (h *orderHandler) Store(c echo.Context) error {
 	}
 
 	userData := c.Get("userData").(jwt.MapClaims)
-	userID := userData["id"].(int64)
+	userID := int64(userData["id"].(float64))
 	order.BuyerID = userID
+	order.Buyer.ID = userID
+	order.Buyer.Name = userData["name"].(string)
+	order.Buyer.Email = userData["email"].(string)
+	order.Buyer.Address = userData["address"].(string)
 
 	if err := h.orderUsecase.Store(c.Request().Context(), &order); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)

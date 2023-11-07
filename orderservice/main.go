@@ -2,7 +2,11 @@ package main
 
 import (
 	"log"
+	"net/http"
+	"net/url"
+	"os"
 	"sync"
+	"time"
 
 	"github.com/funthere/starset/orderservice/domain"
 	helpers "github.com/funthere/starset/orderservice/helper"
@@ -14,6 +18,8 @@ import (
 	orderHandler "github.com/funthere/starset/orderservice/order/delivery/http"
 	orderRepo "github.com/funthere/starset/orderservice/order/repository"
 	orderUsecase "github.com/funthere/starset/orderservice/order/usecase"
+	"github.com/funthere/starset/orderservice/service/product"
+	"github.com/funthere/starset/orderservice/service/user"
 )
 
 func init() {
@@ -48,9 +54,35 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Validator = domain.NewValidator()
 
-	// product init
+	// user service init
+	envUserSrvURL, ok := os.LookupEnv("USER_SERVICE_URL")
+	if !ok {
+		log.Fatalln("Error lookup ENV USER_SERVICE_URL")
+	}
+	httpClient := &http.Client{
+		Timeout:   30 * time.Second,
+		Transport: &http.Transport{},
+	}
+	userSrvURL, err := url.Parse(envUserSrvURL)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+	userSvc := user.NewUserService(httpClient, userSrvURL.String())
+
+	// product service init
+	envProductSrvURL, ok := os.LookupEnv("PRODUCT_SERVICE_URL")
+	if !ok {
+		log.Fatalln("Error lookup ENV PRODUCT_SERVICE_URL")
+	}
+	productSrvURL, err := url.Parse(envProductSrvURL)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+	productSvc := product.NewProductService(httpClient, productSrvURL.String())
+
+	// order init
 	orderRepo := orderRepo.NewOrderRepository(db)
-	ordertUc := orderUsecase.NewOrderUsecase(orderRepo)
+	ordertUc := orderUsecase.NewOrderUsecase(orderRepo, productSvc, userSvc)
 	orderHandler.NewOrderHandler(e, ordertUc)
 
 	// start server
