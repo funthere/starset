@@ -12,16 +12,16 @@ const (
 
 type Order struct {
 	ID                 int64          `json:"-" gorm:"primaryKey"`
-	BuyerID            int64          `json:"-" gorm:"column:buyer_id;NULL;type:integer;" validate:"-"`
-	Buyer              User           `json:"buyer" gorm:"-"`
-	SellerID           int64          `json:"-" gorm:"column:seller_id;NULL;type:integer;" validate:"-"`
-	Seller             User           `json:"seller" gorm:"-"`
 	SourceAddress      string         `json:"source_address" gorm:"NULL;type:varchar(255);"`
 	DestinationAddress string         `json:"destination_address" gorm:"NOT NULL;type:varchar(255);" validate:"required"`
 	Notes              string         `json:"notes" gorm:"NULL;type:varchar(255);" `
 	Items              []OrderProduct `json:"items" gorm:"foreignKey:ID" validate:"required,min=1"`
 	TotalPrice         int64          `json:"total_price" gorm:"column:total_price;NOT NULL;type:integer;"`
 	Status             string         `json:"status" gorm:"NOT NULL;"`
+	BuyerID            int64          `json:"-" gorm:"column:buyer_id;NULL;type:integer;" validate:"-"`
+	Buyer              User           `json:"buyer" gorm:"-"`
+	SellerID           int64          `json:"-" gorm:"column:seller_id;NULL;type:integer;" validate:"-"`
+	Seller             User           `json:"seller" gorm:"-"`
 	CreatedAt          time.Time      `json:"created_at"`
 	UpdatedAt          time.Time      `json:"updated_at"`
 }
@@ -45,7 +45,7 @@ type Product struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Price       int64  `json:"price"`
-	Owner       User   `json:"owner"`
+	Owner       User   `json:"-"`
 }
 
 type Filter struct {

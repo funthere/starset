@@ -57,6 +57,11 @@ func (h *orderHandler) Fetch(c echo.Context) error {
 		BuyerID: int64(userID),
 	}
 
+	orderID, err := strconv.ParseInt(c.QueryParam("order_id"), 10, 64)
+	filter.OrderID = orderID
+	sellerID, err := strconv.ParseInt(c.QueryParam("seller_id"), 10, 64)
+	filter.SellerID = sellerID
+
 	res, err := h.orderUsecase.Fetch(c.Request().Context(), filter)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
@@ -79,7 +84,7 @@ func (h *orderHandler) PatchStatus(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	if req.Status != domain.StatusAccepted || req.Status != domain.StatusRejected {
+	if req.Status != domain.StatusAccepted && req.Status != domain.StatusRejected {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid status")
 	}
 
@@ -88,5 +93,5 @@ func (h *orderHandler) PatchStatus(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	return c.JSON(http.StatusOK, nil)
+	return c.NoContent(http.StatusOK)
 }

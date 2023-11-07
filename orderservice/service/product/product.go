@@ -7,13 +7,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/funthere/starset/orderservice/domain"
 	"github.com/funthere/starset/orderservice/helper"
 	"github.com/labstack/gommon/log"
 )
 
 type ProductService interface {
-	GetProductByIds(ctx context.Context, ids []int64) (products map[int64]domain.Product, err error)
+	GetProductByIds(ctx context.Context, ids []int64) (products map[int64]Product, err error)
 }
 
 type product struct {
@@ -33,7 +32,7 @@ func NewProductService(
 	}
 }
 
-func (s *product) GetProductByIds(ctx context.Context, ids []int64) (responsePayload map[int64]domain.Product, err error) {
+func (s *product) GetProductByIds(ctx context.Context, ids []int64) (responsePayload map[int64]Product, err error) {
 	var (
 		request  *http.Request
 		response *http.Response
