@@ -21,4 +21,4 @@ cd orderservice && go run main.go
 ```
 
 ### Documentation
-(In progress / Will update later)
+[https://documenter.getpostman.com/view/718196/2s9YXh5i4e](https://documenter.getpostman.com/view/718196/2s9YXh5i4e)
