@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"sync"
 	"time"
 
 	"github.com/funthere/starset/orderservice/domain"
@@ -24,7 +23,7 @@ import (
 
 func init() {
 	if err := godotenv.Load(".env"); err != nil {
-		log.Fatalln("err")
+		log.Fatalln(err)
 	}
 }
 
@@ -51,6 +50,7 @@ func main() {
 	}()
 
 	e := echo.New()
+	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Validator = domain.NewValidator()
 
@@ -85,17 +85,7 @@ func main() {
 	ordertUc := orderUsecase.NewOrderUsecase(orderRepo, productSvc, userSvc)
 	orderHandler.NewOrderHandler(e, ordertUc)
 
-	// start server
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-
-	go func() {
-		defer wg.Done()
-		if err := e.Start(helpers.ServerAddress()); err != nil {
-			log.Fatalln(err)
-		}
-	}()
-
-	wg.Wait()
+	// Start server
+	e.Logger.Fatal(e.Start(helpers.ServerAddress()))
 
 }
