@@ -46,8 +46,6 @@ func (u orderUsecase) Store(ctx context.Context, order *domain.Order) error {
 			order.Items[i].Product.Description = product.Description
 			order.Items[i].Product.Price = product.Price
 
-			order.SellerID = product.Owner.ID
-			order.Seller = product.Owner
 			order.TotalPrice += order.Items[i].Product.Price * order.Items[i].Quantity
 		} else {
 			return errors.New(fmt.Sprintf("order.usecase.store: product with ID %v not found", order.Items[i].ProductID))
@@ -78,7 +76,6 @@ func (u orderUsecase) Fetch(ctx context.Context, filter domain.Filter) ([]domain
 
 	for i := range orders {
 		orders[i].Buyer.ID = orders[i].BuyerID
-		orders[i].Seller.ID = orders[i].SellerID
 		for j := range orders[i].Items {
 			if product, ok := mapProducts[orders[i].Items[j].ProductID]; ok {
 				orders[i].Items[j].Product.ID = product.ID
@@ -93,7 +90,6 @@ func (u orderUsecase) Fetch(ctx context.Context, filter domain.Filter) ([]domain
 	var userIDs []int64
 	for i := range orders {
 		userIDs = append(userIDs, orders[i].BuyerID)
-		userIDs = append(userIDs, orders[i].SellerID)
 	}
 
 	mapUser, err := u.userService.GetUserByIds(ctx, userIDs)
@@ -103,9 +99,6 @@ func (u orderUsecase) Fetch(ctx context.Context, filter domain.Filter) ([]domain
 	for i := range orders {
 		if user, ok := mapUser[orders[i].BuyerID]; ok {
 			orders[i].Buyer = user
-		}
-		if user, ok := mapUser[orders[i].SellerID]; ok {
-			orders[i].Seller = user
 		}
 	}
 

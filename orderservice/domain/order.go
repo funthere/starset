@@ -15,13 +15,11 @@ type Order struct {
 	SourceAddress      string         `json:"source_address" gorm:"NULL;type:varchar(255);"`
 	DestinationAddress string         `json:"destination_address" gorm:"NOT NULL;type:varchar(255);" validate:"required"`
 	Notes              string         `json:"notes" gorm:"NULL;type:varchar(255);" `
-	Items              []OrderProduct `json:"items" gorm:"foreignKey:ID" validate:"required,min=1"`
+	Items              []OrderProduct `json:"items" gorm:"foreignKey:OrderID" validate:"required,min=1"`
 	TotalPrice         int64          `json:"total_price" gorm:"column:total_price;NOT NULL;type:integer;"`
 	Status             string         `json:"status" gorm:"NOT NULL;"`
 	BuyerID            int64          `json:"-" gorm:"column:buyer_id;NULL;type:integer;" validate:"-"`
 	Buyer              User           `json:"buyer" gorm:"-"`
-	SellerID           int64          `json:"-" gorm:"column:seller_id;NULL;type:integer;" validate:"-"`
-	Seller             User           `json:"seller" gorm:"-"`
 	CreatedAt          time.Time      `json:"created_at"`
 	UpdatedAt          time.Time      `json:"updated_at"`
 }
@@ -29,6 +27,7 @@ type Order struct {
 type OrderProduct struct {
 	ID        int64   `json:"-" gorm:"primaryKey"`
 	Product   Product `json:"product" gorm:"-"`
+	OrderID   int64   `json:"-" gorm:"column:order_id;NOT NULL;type:integer;"`
 	ProductID int64   `json:"product_id" gorm:"column:product_id;NOT NULL;type:integer;" validate:"required"`
 	Quantity  int64   `json:"quantity" gorm:"column:quantity;NOT NULL;type:integer;" validate:"min=1"`
 }
