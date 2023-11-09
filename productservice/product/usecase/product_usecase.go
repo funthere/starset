@@ -30,11 +30,11 @@ func (u *productUsecase) Store(ctx context.Context, product *domain.Product) err
 	}
 
 	if len(mapUsers) > 0 {
-		if user, ok := mapUsers[product.OwnerID]; ok {
-			product.Owner.ID = user.ID
-			product.Owner.Name = user.Name
-			product.Owner.Email = user.Email
-			product.Owner.Address = user.Address
+		if owner, ok := mapUsers[product.OwnerID]; ok {
+			product.Owner.ID = owner.ID
+			product.Owner.Name = owner.Name
+			product.Owner.Email = owner.Email
+			product.Owner.Address = owner.Address
 		}
 	}
 

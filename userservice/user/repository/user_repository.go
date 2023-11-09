@@ -20,7 +20,7 @@ func NewUserRepository(db *gorm.DB) domain.UserRepository {
 
 func (u *userRepository) Register(ctx context.Context, user *domain.User) error {
 	if err := u.db.Where("email", user.Email).First(&user).Error; !errors.Is(err, gorm.ErrRecordNotFound) {
-		return errors.New("Email duplicated!")
+		return errors.New("email duplicated")
 	}
 
 	err := u.db.Debug().Create(&user).Error
@@ -33,7 +33,7 @@ func (u *userRepository) Login(user *domain.User) error {
 }
 
 func (u *userRepository) GetUserById(id uint32) (domain.User, error) {
-	user := domain.User{}
+	var user domain.User
 	if err := u.db.First(&user).Error; err != nil {
 		return domain.User{}, err
 	}
@@ -42,7 +42,7 @@ func (u *userRepository) GetUserById(id uint32) (domain.User, error) {
 }
 
 func (u *userRepository) FetchUsersByIds(ctx context.Context, ids []uint32) ([]domain.User, error) {
-	users := []domain.User{}
+	var users []domain.User
 	if err := u.db.Find(&users, ids).Error; err != nil {
 		return []domain.User{}, err
 	}

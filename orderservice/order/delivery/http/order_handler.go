@@ -57,9 +57,9 @@ func (h *orderHandler) Fetch(c echo.Context) error {
 		BuyerID: int64(userID),
 	}
 
-	orderID, err := strconv.ParseInt(c.QueryParam("order_id"), 10, 64)
+	orderID, _ := strconv.ParseInt(c.QueryParam("order_id"), 10, 64)
 	filter.OrderID = orderID
-	sellerID, err := strconv.ParseInt(c.QueryParam("seller_id"), 10, 64)
+	sellerID, _ := strconv.ParseInt(c.QueryParam("seller_id"), 10, 64)
 	filter.SellerID = sellerID
 
 	res, err := h.orderUsecase.Fetch(c.Request().Context(), filter)

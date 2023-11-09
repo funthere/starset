@@ -29,7 +29,7 @@ func NewOrderUsecase(
 }
 
 func (u orderUsecase) Store(ctx context.Context, order *domain.Order) error {
-	productIDs := []int64{}
+	var productIDs []int64
 	for i := range order.Items {
 		productIDs = append(productIDs, order.Items[i].ProductID)
 	}
@@ -64,7 +64,7 @@ func (u orderUsecase) Fetch(ctx context.Context, filter domain.Filter) ([]domain
 	}
 
 	// Populate product data
-	productIDs := []int64{}
+	var productIDs []int64
 	for i := range orders {
 		for j := range orders[i].Items {
 			productIDs = append(productIDs, orders[i].Items[j].ProductID)
@@ -90,7 +90,7 @@ func (u orderUsecase) Fetch(ctx context.Context, filter domain.Filter) ([]domain
 	}
 
 	// Populate data of buyer and seller
-	userIDs := []int64{}
+	var userIDs []int64
 	for i := range orders {
 		userIDs = append(userIDs, orders[i].BuyerID)
 		userIDs = append(userIDs, orders[i].SellerID)

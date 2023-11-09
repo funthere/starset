@@ -81,7 +81,7 @@ func (h userHandler) FetchUser(c echo.Context) error {
 	)
 
 	if len(strIds) >= 1 && strIds[0] != "" {
-		ids := []uint32{}
+		var ids []uint32
 		for _, val := range strIds {
 			ui64, err := strconv.ParseUint(val, 10, 64)
 			if err != nil {
