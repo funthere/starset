@@ -34,14 +34,14 @@ type OrderProduct struct {
 }
 
 type User struct {
-	ID      int64  `json:"id"`
+	ID      int64  `json:"-"`
 	Name    string `json:"name"`
 	Email   string `json:"email"`
 	Address string `json:"address"`
 }
 
 type Product struct {
-	ID          int64  `json:"id"`
+	ID          int64  `json:"-"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Price       int64  `json:"price"`

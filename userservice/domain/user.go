@@ -2,6 +2,7 @@ package domain
 
 import (
 	"context"
+	"encoding/json"
 	"time"
 
 	"github.com/funthere/starset/userservice/helpers"
@@ -24,6 +25,19 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 	u.CreatedAt = time.Now()
 
 	return nil
+}
+func (u *User) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		ID      uint32 `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Address string `json:"address"`
+	}{
+		ID:      u.ID,
+		Email:   u.Email,
+		Name:    u.Name,
+		Address: u.Address,
+	})
 }
 
 type UserUsecase interface {
