@@ -15,7 +15,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	orderHandler "github.com/funthere/starset/orderservice/order/delivery/http"
-	orderRepo "github.com/funthere/starset/orderservice/order/repository"
+	orderRepository "github.com/funthere/starset/orderservice/order/repository"
 	orderUsecase "github.com/funthere/starset/orderservice/order/usecase"
 	"github.com/funthere/starset/orderservice/service/product"
 	"github.com/funthere/starset/orderservice/service/user"
@@ -81,9 +81,9 @@ func main() {
 	productSvc := product.NewProductService(httpClient, productSrvURL.String())
 
 	// order init
-	orderRepo := orderRepo.NewOrderRepository(db)
-	ordertUc := orderUsecase.NewOrderUsecase(orderRepo, productSvc, userSvc)
-	orderHandler.NewOrderHandler(e, ordertUc)
+	orderRepo := orderRepository.NewOrderRepository(db)
+	orderUc := orderUsecase.NewOrderUsecase(orderRepo, productSvc, userSvc)
+	orderHandler.NewOrderHandler(e, orderUc)
 
 	// Start server
 	e.Logger.Fatal(e.Start(helpers.ServerAddress()))

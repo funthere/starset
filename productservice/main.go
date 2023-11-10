@@ -16,7 +16,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	productHandler "github.com/funthere/starset/productservice/product/delivery/http"
-	productRepo "github.com/funthere/starset/productservice/product/repository"
+	productRepository "github.com/funthere/starset/productservice/product/repository"
 	productUsecase "github.com/funthere/starset/productservice/product/usecase"
 	"github.com/funthere/starset/productservice/service/user"
 )
@@ -69,7 +69,7 @@ func main() {
 	userSvc := user.NewUserService(httpClient, userSrvURL.String())
 
 	// product init
-	productRepo := productRepo.NewProductRepository(db)
+	productRepo := productRepository.NewProductRepository(db)
 	productUc := productUsecase.NewProductUsecase(productRepo, userSvc)
 	productHandler.NewProductHandler(e, productUc)
 

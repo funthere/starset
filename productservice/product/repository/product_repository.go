@@ -28,7 +28,7 @@ func (r *productRepository) Store(ctx context.Context, product *domain.Product) 
 }
 
 func (r *productRepository) GetById(ctx context.Context, id uint32) (domain.Product, error) {
-	product := domain.Product{}
+	var product domain.Product
 	if err := r.db.First(&product, id).Error; err != nil {
 		return domain.Product{}, err
 	}
@@ -36,7 +36,7 @@ func (r *productRepository) GetById(ctx context.Context, id uint32) (domain.Prod
 }
 
 func (r *productRepository) FetchByIds(ctx context.Context, ids []uint32) ([]domain.Product, error) {
-	products := []domain.Product{}
+	var products []domain.Product
 	if err := r.db.Find(&products, ids).Error; err != nil {
 		return []domain.Product{}, err
 	}
@@ -44,7 +44,7 @@ func (r *productRepository) FetchByIds(ctx context.Context, ids []uint32) ([]dom
 }
 
 func (r *productRepository) Fetch(ctx context.Context, filter domain.Filter) ([]domain.Product, error) {
-	products := []domain.Product{}
+	var products []domain.Product
 	qBuilder := r.db.WithContext(ctx).Debug()
 	if filter.OrderID > 0 {
 		qBuilder = qBuilder.Where("id", filter.OrderID)

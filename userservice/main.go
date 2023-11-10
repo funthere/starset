@@ -12,7 +12,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	userHandler "github.com/funthere/starset/userservice/user/delivery/http"
-	userRepo "github.com/funthere/starset/userservice/user/repository"
+	userRepoSitory "github.com/funthere/starset/userservice/user/repository"
 	userUsecase "github.com/funthere/starset/userservice/user/usecase"
 )
 
@@ -49,7 +49,7 @@ func main() {
 	e.Validator = domain.NewValidator()
 
 	// user init
-	userRepo := userRepo.NewUserRepository(db)
+	userRepo := userRepoSitory.NewUserRepository(db)
 	userUc := userUsecase.NewUserUsecase(userRepo)
 	userHandler.NewUserHandler(e, userUc)
 

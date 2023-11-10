@@ -22,7 +22,7 @@ func (r orderRepository) Store(ctx context.Context, order *domain.Order) error {
 }
 
 func (r orderRepository) Fetch(ctx context.Context, filter domain.Filter) ([]domain.Order, error) {
-	orders := []domain.Order{}
+	var orders []domain.Order
 	qBuilder := r.db.WithContext(ctx).Debug().Model(&orders)
 	if filter.BuyerID > 0 {
 		qBuilder = qBuilder.Where("buyer_id", filter.BuyerID)
