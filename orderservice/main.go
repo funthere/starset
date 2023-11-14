@@ -33,17 +33,17 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	sqliteDB, err := db.DB()
+	sqlDB, err := db.DB()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	if err := sqliteDB.Ping(); err != nil {
+	if err := sqlDB.Ping(); err != nil {
 		log.Fatalln(err)
 	}
 
 	defer func() {
-		err := sqliteDB.Close()
+		err := sqlDB.Close()
 		if err != nil {
 			log.Fatalln(err)
 		}
