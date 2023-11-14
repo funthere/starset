@@ -9,7 +9,7 @@ import (
 
 	"github.com/funthere/starset/orderservice/domain"
 	helpers "github.com/funthere/starset/orderservice/helper"
-	"github.com/funthere/starset/orderservice/service"
+	dbService "github.com/funthere/starset/orderservice/service/db"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -28,7 +28,7 @@ func init() {
 }
 
 func main() {
-	db, err := service.InitDatabase()
+	db, err := dbService.InitPostgreDatabase()
 	if err != nil {
 		log.Fatalln(err)
 	}
