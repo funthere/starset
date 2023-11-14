@@ -8,9 +8,10 @@ import (
 	"sync"
 	"time"
 
+	dbService "github.com/funthere/starset/productservice/service/db"
+
 	"github.com/funthere/starset/productservice/domain"
 	helpers "github.com/funthere/starset/productservice/helper"
-	"github.com/funthere/starset/productservice/service"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -28,22 +29,22 @@ func init() {
 }
 
 func main() {
-	db, err := service.InitDatabase()
+	db, err := dbService.InitPostgreDatabase()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	sqliteDB, err := db.DB()
+	sqlDB, err := db.DB()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	if err := sqliteDB.Ping(); err != nil {
+	if err := sqlDB.Ping(); err != nil {
 		log.Fatalln(err)
 	}
 
 	defer func() {
-		err := sqliteDB.Close()
+		err := sqlDB.Close()
 		if err != nil {
 			log.Fatalln(err)
 		}
