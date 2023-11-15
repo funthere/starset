@@ -13,7 +13,7 @@ type Product struct {
 	Name        string    `json:"name" gorm:"NOT NULL;type:varchar(255);" validate:"required"`
 	Description string    `json:"description" gorm:"NOT NULL;type:varchar(255);" validate:"required"`
 	Price       int64     `json:"price" gorm:"NOT NULL;" validate:"required"`
-	OwnerID     uint32    `json:"-" gorm:"column:user_id;NULL;type:integer;" validate:"-"`
+	OwnerID     uint32    `json:"-" gorm:"column:user_id;NULL;" validate:"-"`
 	Owner       User      `json:"owner" gorm:"-" validate:"-"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`

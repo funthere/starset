@@ -6,7 +6,7 @@ import (
 
 	"github.com/funthere/starset/userservice/domain"
 	"github.com/funthere/starset/userservice/helpers"
-	"github.com/funthere/starset/userservice/service"
+	dbService "github.com/funthere/starset/userservice/service/db"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -23,22 +23,22 @@ func init() {
 }
 
 func main() {
-	db, err := service.InitDatabase()
+	db, err := dbService.InitPostgreDatabase()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	sqliteDB, err := db.DB()
+	sqlDB, err := db.DB()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err = sqliteDB.Ping(); err != nil {
+	if err = sqlDB.Ping(); err != nil {
 		log.Fatal(err)
 	}
 
 	defer func() {
-		err := sqliteDB.Close()
+		err := sqlDB.Close()
 		if err != nil {
 			log.Fatal(err)
 		}
