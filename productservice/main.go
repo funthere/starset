@@ -12,7 +12,6 @@ import (
 
 	"github.com/funthere/starset/productservice/domain"
 	helpers "github.com/funthere/starset/productservice/helper"
-	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
@@ -23,9 +22,9 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatalln(err)
-	}
+	// if err := godotenv.Load(".env"); err != nil {
+	// 	log.Fatalln(err)
+	// }
 }
 
 func main() {

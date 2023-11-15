@@ -1,0 +1,99 @@
+version: "3"
+
+services:
+  starset.postgre:
+    image: postgres:15-alpine
+    platform: linux/x86_64
+    container_name: "starset.db.postgre"
+    restart: always
+#    volumes:
+#      - ./pg-init-scripts:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "54320:5432"
+    expose:
+      - "54320"
+    networks:
+      - default
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+
+  starset.userservice:
+    image: starset-user-service:latest
+    container_name: starset.svc.user
+    env_file:
+      - userservice/.env.example
+    command: /app/starset-user-service
+    ports:
+      - "5001:5001"
+    restart: always
+    environment:
+      - DB_HOST=starset.postgre
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=password
+      - DB_NAME=postgres
+      - SERVER_ADDRESS=:5001
+      - JWT_SECRET=userservice-secret-key
+    depends_on:
+      - starset.postgre
+    networks:
+      - default
+    build:
+      context: .
+      dockerfile: Dockerfile-user-service
+
+  starset.productservice:
+    image: starset-product-service:latest
+    container_name: starset.svc.product
+    env_file:
+      - productservice/.env.example
+    command: /app/starset-product-service
+    ports:
+      - "5002:5002"
+    restart: always
+    environment:
+      - DB_HOST=starset.postgre
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=password
+      - DB_NAME=postgres
+      - SERVER_ADDRESS=:5002
+      - JWT_SECRET=productservice-secret-key
+      - USER_SERVICE_URL=http://starset.svc.user:5001
+    depends_on:
+      - starset.postgre
+    networks:
+      - default
+    build:
+      context: .
+      dockerfile: Dockerfile-product-service
+
+  starset.orderservice:
+    image: starset-order-service:latest
+    container_name: starset.svc.order
+    env_file:
+      - orderservice/.env.example
+    command: /app/starset-order-service
+    ports:
+      - "5003:5003"
+    restart: always
+    environment:
+      - DB_HOST=starset.postgre
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=password
+      - DB_NAME=postgres
+      - SERVER_ADDRESS=:5003
+      - JWT_SECRET=orderservice-secret-key
+      - USER_SERVICE_URL=http://starset.svc.user:5001
+      - PRODUCT_SERVICE_URL=http://starset.svc.product:5002
+    depends_on:
+      - starset.postgre
+    networks:
+      - default
+    build:
+      context: .
+      dockerfile: Dockerfile-order-service

@@ -7,7 +7,6 @@ import (
 	"github.com/funthere/starset/userservice/domain"
 	"github.com/funthere/starset/userservice/helpers"
 	dbService "github.com/funthere/starset/userservice/service/db"
-	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
@@ -17,9 +16,9 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal(err)
-	}
+	// if err := godotenv.Load(".env"); err != nil {
+	// 	log.Fatal(err)
+	// }
 }
 
 func main() {
