@@ -1,0 +1,20 @@
+FROM golang:1.21.2-alpine3.18 as build
+
+WORKDIR /starset-user-service
+
+COPY userservice .
+
+RUN go mod vendor
+
+RUN CGO_ENABLED=0 go build -o starset-user-service github.com/funthere/starset/userservice
+
+FROM gcr.io/distroless/static
+
+WORKDIR /starset-user-service
+
+COPY --from=build /starset-user-service /app
+#COPY userservice/.env.example /app/.env
+
+EXPOSE 5001
+
+CMD ["/app/starset-user-service"]

@@ -1,0 +1,19 @@
+FROM golang:1.21.2-alpine3.18 as build
+
+WORKDIR /starset-product-service
+
+COPY productservice .
+
+RUN go mod vendor
+
+RUN CGO_ENABLED=0 go build -o starset-product-service github.com/funthere/starset/productservice
+
+FROM gcr.io/distroless/static
+
+WORKDIR /starset-product-service
+
+COPY --from=build /starset-product-service /app
+
+EXPOSE 5002
+
+CMD ["/app/starset-product-service"]
