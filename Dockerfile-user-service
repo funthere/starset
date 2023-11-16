@@ -1,3 +1,4 @@
+# Build Stage
 FROM golang:1.21.2-alpine3.18 as build
 
 WORKDIR /starset-user-service
@@ -6,14 +7,14 @@ COPY userservice .
 
 RUN go mod vendor
 
-RUN CGO_ENABLED=0 go build -o starset-user-service github.com/funthere/starset/userservice
+RUN CGO_ENABLED=0 go build -o starset-user-service
 
-FROM gcr.io/distroless/static
+# Run Stage
+FROM alpine:3.18
 
 WORKDIR /starset-user-service
 
 COPY --from=build /starset-user-service /app
-#COPY userservice/.env.example /app/.env
 
 EXPOSE 5001
 

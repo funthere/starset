@@ -1,3 +1,4 @@
+# Build Stage
 FROM golang:1.21.2-alpine3.18 as build
 
 WORKDIR /starset-order-service
@@ -6,9 +7,10 @@ COPY orderservice .
 
 RUN go mod vendor
 
-RUN CGO_ENABLED=0 go build -o starset-order-service github.com/funthere/starset/orderservice
+RUN CGO_ENABLED=0 go build -o starset-order-service
 
-FROM gcr.io/distroless/static
+# Run Stage
+FROM alpine:3.18
 
 WORKDIR /starset-order-service
 
