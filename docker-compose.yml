@@ -32,7 +32,7 @@ services:
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASS=password
-      - DB_NAME=postgres
+      - DB_NAME=user
       - SERVER_ADDRESS=:5001
       - JWT_SECRET=userservice-secret-key
     depends_on:
@@ -57,7 +57,7 @@ services:
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASS=password
-      - DB_NAME=postgres
+      - DB_NAME=product
       - SERVER_ADDRESS=:5002
       - JWT_SECRET=productservice-secret-key
       - USER_SERVICE_URL=http://starset.svc.user:5001
@@ -83,7 +83,7 @@ services:
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASS=password
-      - DB_NAME=postgres
+      - DB_NAME=order
       - SERVER_ADDRESS=:5003
       - JWT_SECRET=orderservice-secret-key
       - USER_SERVICE_URL=http://starset.svc.user:5001
