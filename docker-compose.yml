@@ -6,8 +6,6 @@ services:
     platform: linux/x86_64
     container_name: "starset.db.postgre"
     restart: always
-#    volumes:
-#      - ./pg-init-scripts:/docker-entrypoint-initdb.d
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password

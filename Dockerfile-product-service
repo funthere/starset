@@ -1,3 +1,4 @@
+# Build Stage
 FROM golang:1.21.2-alpine3.18 as build
 
 WORKDIR /starset-product-service
@@ -6,9 +7,10 @@ COPY productservice .
 
 RUN go mod vendor
 
-RUN CGO_ENABLED=0 go build -o starset-product-service github.com/funthere/starset/productservice
+RUN CGO_ENABLED=0 go build -o starset-product-service
 
-FROM gcr.io/distroless/static
+# Run Stage
+FROM alpine:3.18
 
 WORKDIR /starset-product-service
 
